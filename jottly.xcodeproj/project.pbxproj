@@ -7,14 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		33196F1D1F51910A007F124A /* BasicScheddy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33196F1C1F51910A007F124A /* BasicScheddy.swift */; };
 		3360AADB1F4D43FA00543DE7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3360AADA1F4D43FA00543DE7 /* AppDelegate.swift */; };
 		3360AADD1F4D43FA00543DE7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3360AADC1F4D43FA00543DE7 /* ViewController.swift */; };
 		3360AAE01F4D43FA00543DE7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3360AADE1F4D43FA00543DE7 /* Main.storyboard */; };
 		3360AAE21F4D43FA00543DE7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3360AAE11F4D43FA00543DE7 /* Assets.xcassets */; };
 		3360AAE51F4D43FA00543DE7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3360AAE31F4D43FA00543DE7 /* LaunchScreen.storyboard */; };
+		3360AAED1F4D4D1D00543DE7 /* ScheduledLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3360AAEC1F4D4D1D00543DE7 /* ScheduledLocationManager.swift */; };
+		3360AAEF1F4D9DA200543DE7 /* HCLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3360AAEE1F4D9DA200543DE7 /* HCLocationManager.swift */; };
+		3360AAF11F4DA3A300543DE7 /* HCLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3360AAF01F4DA3A300543DE7 /* HCLogger.swift */; };
+		3360AAF31F4DA3B600543DE7 /* HCLogsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3360AAF21F4DA3B600543DE7 /* HCLogsViewController.swift */; };
+		3360AAF51F4DA43D00543DE7 /* UpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3360AAF41F4DA43D00543DE7 /* UpdateManager.swift */; };
+		3360AAF71F4EE63800543DE7 /* ScheduledDoer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3360AAF61F4EE63800543DE7 /* ScheduledDoer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		33196F1C1F51910A007F124A /* BasicScheddy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicScheddy.swift; sourceTree = "<group>"; };
 		3360AAD71F4D43FA00543DE7 /* jottly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = jottly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3360AADA1F4D43FA00543DE7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3360AADC1F4D43FA00543DE7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -22,6 +30,13 @@
 		3360AAE11F4D43FA00543DE7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3360AAE41F4D43FA00543DE7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3360AAE61F4D43FA00543DE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3360AAEC1F4D4D1D00543DE7 /* ScheduledLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledLocationManager.swift; sourceTree = "<group>"; };
+		3360AAEE1F4D9DA200543DE7 /* HCLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HCLocationManager.swift; sourceTree = "<group>"; };
+		3360AAF01F4DA3A300543DE7 /* HCLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HCLogger.swift; sourceTree = "<group>"; };
+		3360AAF21F4DA3B600543DE7 /* HCLogsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HCLogsViewController.swift; sourceTree = "<group>"; };
+		3360AAF41F4DA43D00543DE7 /* UpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateManager.swift; sourceTree = "<group>"; };
+		3360AAF61F4EE63800543DE7 /* ScheduledDoer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledDoer.swift; sourceTree = "<group>"; };
+		3360AAF81F501A2800543DE7 /* jottly.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = jottly.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,12 +69,20 @@
 		3360AAD91F4D43FA00543DE7 /* jottly */ = {
 			isa = PBXGroup;
 			children = (
+				3360AAF81F501A2800543DE7 /* jottly.entitlements */,
 				3360AADA1F4D43FA00543DE7 /* AppDelegate.swift */,
 				3360AADC1F4D43FA00543DE7 /* ViewController.swift */,
 				3360AADE1F4D43FA00543DE7 /* Main.storyboard */,
+				3360AAEC1F4D4D1D00543DE7 /* ScheduledLocationManager.swift */,
+				3360AAEE1F4D9DA200543DE7 /* HCLocationManager.swift */,
 				3360AAE11F4D43FA00543DE7 /* Assets.xcassets */,
 				3360AAE31F4D43FA00543DE7 /* LaunchScreen.storyboard */,
 				3360AAE61F4D43FA00543DE7 /* Info.plist */,
+				3360AAF01F4DA3A300543DE7 /* HCLogger.swift */,
+				3360AAF21F4DA3B600543DE7 /* HCLogsViewController.swift */,
+				3360AAF41F4DA43D00543DE7 /* UpdateManager.swift */,
+				3360AAF61F4EE63800543DE7 /* ScheduledDoer.swift */,
+				33196F1C1F51910A007F124A /* BasicScheddy.swift */,
 			);
 			path = jottly;
 			sourceTree = "<group>";
@@ -96,6 +119,14 @@
 				TargetAttributes = {
 					3360AAD61F4D43FA00543DE7 = {
 						CreatedOnToolsVersion = 9.0;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -135,7 +166,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3360AAED1F4D4D1D00543DE7 /* ScheduledLocationManager.swift in Sources */,
+				3360AAF71F4EE63800543DE7 /* ScheduledDoer.swift in Sources */,
+				33196F1D1F51910A007F124A /* BasicScheddy.swift in Sources */,
+				3360AAF51F4DA43D00543DE7 /* UpdateManager.swift in Sources */,
+				3360AAF11F4DA3A300543DE7 /* HCLogger.swift in Sources */,
+				3360AAEF1F4D9DA200543DE7 /* HCLocationManager.swift in Sources */,
 				3360AADD1F4D43FA00543DE7 /* ViewController.swift in Sources */,
+				3360AAF31F4DA3B600543DE7 /* HCLogsViewController.swift in Sources */,
 				3360AADB1F4D43FA00543DE7 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -273,8 +311,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = jottly/jottly.entitlements;
 				DEVELOPMENT_TEAM = 2YKMTT96X8;
 				INFOPLIST_FILE = jottly/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = gg.hc.jottly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -287,8 +327,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = jottly/jottly.entitlements;
 				DEVELOPMENT_TEAM = 2YKMTT96X8;
 				INFOPLIST_FILE = jottly/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = gg.hc.jottly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
