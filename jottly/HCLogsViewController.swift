@@ -37,7 +37,7 @@ extension HCLogsViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "HCLogCell")
         let log = hcLogger.logs.reversed()[indexPath.row]
 
-        cell.textLabel?.text = "\(log.timestamp) - \(log.text)"
+        cell.textLabel?.text = "\(log.date.debugDescription) - \(log.text)"
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.sizeToFit()
         cell.textLabel?.lineBreakMode = .byWordWrapping

@@ -3,9 +3,11 @@ import UserNotifications
 
 //let hcLogger = HCLogger(store: HCUserDefaultsLogStore(identifier: "jottly.logs"))
 
-let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-let logFilePath = dir.appendingPathComponent("ham.txt")
-let hcLogger = HCLogger(store: HCFileLogStore(filePath: logFilePath))
+let hcLogger = HCLogger(store: HCUserDefaultsLogStore(identifier: "jottly.logs"))
+
+//let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+//let logFilePath = dir.appendingPathComponent("ham.txt")
+//let hcLogger = HCLogger(store: HCFileLogStore(filePath: logFilePath))
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
