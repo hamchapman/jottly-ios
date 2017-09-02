@@ -1,54 +1,52 @@
 import Foundation
 import UIKit
 
-//    public init(date: Date, text: String) {
-//        self.text = text
-//        self.date = date
-//    }
-//
-//    public init(text: String) {
-//        self.init(date: Date(), text: text)
-//    }
-
-//    private static func currentTime() -> String {
-//        let date = Date()
-//        let calender = Calendar.current
-//        let components = calender.dateComponents([.hour, .minute, .second], from: date)
-//        let componentsArray = [
-//            components.hour!,
-//            components.minute!,
-//            components.second!
-//        ].map { String(format: "%02d", $0) }
-//        return componentsArray.joined(separator: ":")
-//    }
-
-
-
 public typealias HCLogger = GenericHCLogger<BasicHCLog>
 
 public struct BasicHCLog: HCLog {
     public let date: Date
     public let text: String
+    public let logLevel: HCLogLevel
 
-    public init(date: Date, text: String) {
+    public init(date: Date, text: String, logLevel: HCLogLevel = .info) {
         self.text = text
         self.date = date
+        self.logLevel = logLevel
     }
 
-    public init(text: String) {
-        self.init(date: Date(), text: text)
+    public init(text: String, logLevel: HCLogLevel = .info) {
+        self.init(date: Date(), text: text, logLevel: logLevel)
     }
 }
 
 public protocol HCLog: Codable {
 
-    init(text: String)
+    init(text: String, logLevel: HCLogLevel)
 
     // TODO: short, medium, long, or unix timestamp version
     var date: Date { get }
     var text: String { get }
+    var logLevel: HCLogLevel { get }
 }
 
+public enum HCLogLevel: Int, Comparable, Codable {
+    case verbose = 1, debug, info, warning, error
+
+    public static func < (a: HCLogLevel, b: HCLogLevel) -> Bool {
+        return a.rawValue < b.rawValue
+    }
+
+    public func stringRepresentation() -> String {
+        switch self {
+        case .verbose: return "VERBOSE"
+        case .debug: return "DEBUG"
+        case .info: return "INFO"
+        case .warning: return "WARNING"
+        case .error: return "ERROR"
+        }
+    }
+
+}
 
 
 public protocol HCLogStore {
@@ -58,18 +56,11 @@ public protocol HCLogStore {
     func appendLog(_ log: LogType)
 }
 
-//public protocol HCLogStore {
-//    func fetchLogs(cursor: String?, limit: Int?) -> [HCLog]
-//    func appendLog(_ log: HCLog)
-//}
-
 extension HCLogStore {
     public func fetchLogs(cursor: String? = nil, limit: Int? = nil) -> [LogType] {
         return fetchLogs(cursor: cursor, limit: limit)
     }
 }
-
-//public typealias DefaultUserDefaultsLogStore = AnyHCLogStore<BasicHCLog>
 
 public class HCUserDefaultsLogStore<LogType: HCLog>: AnyHCLogStore<LogType> {
 
@@ -88,8 +79,6 @@ public class HCUserDefaultsLogStore<LogType: HCLog>: AnyHCLogStore<LogType> {
         var currentLogs = self.fetchLogs()
         currentLogs.append(log)
 
-        print("About to try and encode log: \(try? PropertyListEncoder().encode(log))")
-
         let encodedLogs = currentLogs.flatMap { try? PropertyListEncoder().encode($0) }
 
         defaults.set(encodedLogs, forKey: self.identifier)
@@ -102,76 +91,95 @@ public class HCUserDefaultsLogStore<LogType: HCLog>: AnyHCLogStore<LogType> {
     }
 }
 
-//public class HCFileLogStore: HCLogStore {
-//
-//    // TODO: This should keep its own cache of logs so that it doesn't
-//    // have to always fetch to append
-//
-//    public let filePath: URL
-//
-//    public init(filePath: URL) {
-//        self.filePath = filePath
-//    }
-//
-//    public func appendLog(_ log: HCLog) {
-//        writeToFile(path: filePath, log: log)
-//    }
-//
-//    public func fetchLogs(cursor: String? = nil, limit: Int? = nil) -> [HCLog] {
-//        let logString = readFromFile(path: filePath)
-//
-//        // TODO: See if Codable can be used to encode / decode "special" format
-//
-//        let logLines = logString.split(separator: "\n")
-//        return logLines.flatMap { logLine in
-//            return parseLog(from: String(logLine))
-//        }
-//    }
-//
+public class HCFileLogStore<LogType: HCLog>: AnyHCLogStore<LogType> {
+
+    // TODO: This should keep its own cache of logs so that it doesn't
+    // have to always fetch to append
+
+    public let filePath: URL
+
+    public init(filePath: URL) {
+        self.filePath = filePath
+        super.init(self)
+    }
+
+    override public func appendLog(_ log: LogType) {
+        writeToFile(path: filePath, log: log)
+    }
+
+    override public func fetchLogs(cursor: String? = nil, limit: Int? = nil) -> [LogType] {
+        let logString = readFromFile(path: filePath)
+
+        // TODO: See if Codable can be used to encode / decode "special" format
+
+        let logLines = logString.split(separator: "\n")
+        return logLines.flatMap { logLine in
+            guard let logLineData = logLine.data(using: .utf8) else {
+                return nil
+            }
+
+            return try? JSONDecoder().decode(LogType.self, from: logLineData)
+        }
+    }
+
 //    private func parseLog(from logLine: String) -> LogType? {
 //        let logSeparatedByDateKey = logLine.components(separatedBy: "date=")
 //        let dateLogSeparatedByTextKey = logSeparatedByDateKey[1].components(separatedBy: " text=")
-//        // TODO: Get the date somehow? Codable etc? Or just DateFormatter()?
-//        // DateFormatter().date(from: dateLogSeparatedByTextKey.first!)
+        // TODO: Get the date somehow? Codable etc? Or just DateFormatter()?
+        // DateFormatter().date(from: dateLogSeparatedByTextKey.first!)
 //        return HCLog(date: Date(), text: dateLogSeparatedByTextKey.last!)
+//        return
 //    }
-//
-//    private func writeToFile(path: URL, log: HCLog) {
-////        let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-////        let path = dir.appendingPathComponent(name)
-//
-//        let textToWrite = "date=\(log.date.debugDescription) text=\(log.text)\n"
-//        print("************ textToWrtier: \(textToWrite)")
-//
-//        if let fileHandle = try? FileHandle(forWritingTo: path) {
-//            fileHandle.seekToEndOfFile()
-//            fileHandle.write(textToWrite.data(using: .utf8)!)
-//            print("Appended to file at path \(path)")
-//        } else {
-//            do {
-//                try textToWrite.write(to: path, atomically: true, encoding: .utf8)
-//                print("Wrote to file at path \(path)")
-//            } catch let error {
-//                print("Error writing file at \(path). Error: \(error)")
-//            }
-//        }
-//    }
-//
-//    private func readFromFile(path: URL) -> String {
-//        do {
-//            return try String(contentsOf: path, encoding: .utf8)
-//        } catch let err {
-//            print("Error reading logs from path \(path): \(err)")
-//            return ""
-//        }
-//    }
-//}
 
+    private func writeToFile(path: URL, log: LogType) {
+        guard let encodedLog = try? JSONEncoder().encode(log) else {
+            print("Failed to encode log before writing to file. Log: \(log)")
+            return
+        }
+
+        guard let encodedLogString = String(data: encodedLog, encoding: .utf8) else {
+            print("Failed to convert encoded log data to a string before writing to file")
+            return
+        }
+
+        let textToWrite = "\(encodedLogString)\n"
+
+        if let fileHandle = try? FileHandle(forWritingTo: path) {
+            fileHandle.seekToEndOfFile()
+            fileHandle.write(textToWrite.data(using: .utf8)!)
+            print("Appended to file at path \(path)")
+        } else {
+            do {
+                try textToWrite.write(to: path, atomically: true, encoding: .utf8)
+                print("Wrote to file at path \(path)")
+            } catch let error {
+                print("Error writing file at \(path). Error: \(error)")
+            }
+        }
+    }
+
+    private func readFromFile(path: URL) -> String {
+        do {
+            return try String(contentsOf: path, encoding: .utf8)
+        } catch let err {
+            print("Error reading logs from path \(path): \(err)")
+            return ""
+        }
+    }
+
+}
+
+public struct HCLoggerOptions {
+    public var printToConsole: Bool
+
+    public init(printToConsole: Bool = true) {
+        self.printToConsole = printToConsole
+    }
+}
 
 public class GenericHCLogger<LogType: HCLog> {
+    public var options: HCLoggerOptions
 
-    // TOOD: Add support for not requiring gesture recognizers and allow presentation via
-    // a button click or similar
     private lazy var gestureRecognizer: UIGestureRecognizer = {
         if let gesture = self.providedGestureRecognizer {
             return gesture
@@ -186,17 +194,16 @@ public class GenericHCLogger<LogType: HCLog> {
 
     public let providedGestureRecognizer: UIGestureRecognizer?
 
-    public var identifier: String
-    public var logs: [HCLog] = []
+    public var logs: [LogType] = []
     public var gestureRecognizerToViewControllerMap: [UIGestureRecognizer: UIViewController] = [:]
     public let hcLogsViewController = HCLogsViewController()
 
     public let store: AnyHCLogStore<LogType>
 
-    public init(store: AnyHCLogStore<LogType>, gestureRecognizer: UIGestureRecognizer? = nil, identifier: String = "hclogs") {
-        self.providedGestureRecognizer = gestureRecognizer
-        self.identifier = identifier
+    public init(store: AnyHCLogStore<LogType>, options: HCLoggerOptions = HCLoggerOptions(), gestureRecognizer: UIGestureRecognizer? = nil) {
         self.store = store
+        self.options = options
+        self.providedGestureRecognizer = gestureRecognizer
         self.logs = store.fetchLogs()
     }
 
@@ -220,9 +227,21 @@ public class GenericHCLogger<LogType: HCLog> {
         vc.present(navController, animated: true)
     }
 
+    // TODO: better log
+    public func log(_ message: @autoclosure @escaping () -> String, logLevel: HCLogLevel) {
+//        let log = LogType(text: message(), logLevel: HCLogLevel)
+    }
+
+    // TODO: Option to log by passing in LogType directly rather than string message
+
     public func addToLogs(text: String) {
-        let log = LogType(text: text)
-        debugPrint("DEBUG PRINT HC LOG: \(log)")
+        // TODO: Fixme - pass in logLevel
+        let log = LogType(text: text, logLevel: .info)
+
+        if options.printToConsole {
+            print("[HCLogger]: \(log)")
+        }
+
         self.store.appendLog(log)
         // TODO: Use a success / failure callback here?
         self.logs.append(log)
@@ -244,16 +263,7 @@ public class GenericHCLogger<LogType: HCLog> {
 }
 
 
-
-//public protocol HCLogStore {
-//    associatedtype LogType
-//
-//    func fetchLogs(cursor: String?, limit: Int?) -> [LogType]
-//    func appendLog(_ log: LogType)
-//}
-
 private class _AnyHCLogStoreBase<LogType>: HCLogStore {
-
     init() {
         guard type(of: self) != _AnyHCLogStoreBase.self else {
             fatalError("Cannot initialise, must subclass")
@@ -288,7 +298,6 @@ private final class _AnyHCLogStoreBox<ConcreteHCLogStore: HCLogStore>: _AnyHCLog
 }
 
 public class AnyHCLogStore<LogType>: HCLogStore {
-
     private let box: _AnyHCLogStoreBase<LogType>
 
     public init<Concrete: HCLogStore>(_ concrete: Concrete) where Concrete.LogType == LogType {
