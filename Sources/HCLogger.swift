@@ -196,7 +196,7 @@ public class GenericHCLogger<LogType: HCLog> {
 
     public var logs: [LogType] = []
     public var gestureRecognizerToViewControllerMap: [UIGestureRecognizer: UIViewController] = [:]
-    public let hcLogsViewController = HCLogsViewController()
+    public lazy var hcLogsViewController = HCLogsViewController<LogType>(logger: self)
 
     public let store: AnyHCLogStore<LogType>
 
@@ -228,9 +228,9 @@ public class GenericHCLogger<LogType: HCLog> {
     }
 
     // TODO: better log
-    public func log(_ message: @autoclosure @escaping () -> String, logLevel: HCLogLevel) {
-//        let log = LogType(text: message(), logLevel: HCLogLevel)
-    }
+//    public func log(_ message: @autoclosure @escaping () -> String, logLevel: HCLogLevel) {
+////        let log = LogType(text: message(), logLevel: HCLogLevel)
+//    }
 
     // TODO: Option to log by passing in LogType directly rather than string message
 

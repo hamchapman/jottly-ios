@@ -18,14 +18,20 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Allow this to give access to things like weight, active calories and more</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>TODO: To test some significant location changes.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>TODO: To test some significant location changes.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>TODO: To test some significant location changes.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Allow this to give access to motion-related data, e.g. step count</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>

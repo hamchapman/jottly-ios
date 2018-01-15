@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:jottly.xcodeproj">
+      location = "self:/Users/hami/projects/jottly/ios/jottly/jottly-ios.xcodeproj">
    </FileRef>
 </Workspace>

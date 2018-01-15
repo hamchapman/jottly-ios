@@ -20,11 +20,13 @@ public class ScheduledLocationManager: NSObject, CLLocationManagerDelegate {
     private var isManagerRunning = false
     private var checkLocationTimer: Timer?
     private var waitTimer: Timer?
+    private var timeoutTimer: Timer?
     private var bgTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
     private var lastLocations = [CLLocation]()
 
     public private(set) var acceptableLocationAccuracy: CLLocationAccuracy = 100
     public private(set) var checkLocationInterval: TimeInterval = 10
+    public private(set) var timeoutTime: TimeInterval = 0
     public private(set) var isRunning = false
 
     public init(delegate: ScheduledLocationManagerDelegate) {
@@ -45,13 +47,19 @@ public class ScheduledLocationManager: NSObject, CLLocationManagerDelegate {
         manager.requestAlwaysAuthorization()
     }
 
-    public func startUpdatingLocation(interval: TimeInterval, acceptableLocationAccuracy: CLLocationAccuracy = 100) {
+    public func startUpdatingLocation(
+        interval: TimeInterval = 150,
+        acceptableLocationAccuracy: CLLocationAccuracy = 100,
+        timeout: TimeInterval = 30
+    ) {
         if isRunning { stopUpdatingLocation() }
 
         self.checkLocationInterval = (minBGTime...maxBGTime).contains(interval) ? interval : maxBGTime
         self.acceptableLocationAccuracy = max(minAcceptableLocationAccuracy, acceptableLocationAccuracy)
 
         isRunning = true
+
+        self.timeoutTime = timeout
 
         addNotifications()
         startLocationManager()
@@ -127,6 +135,10 @@ public class ScheduledLocationManager: NSObject, CLLocationManagerDelegate {
         } else if waitTimer == nil {
             startWaitTimer()
         }
+
+        if timeoutTimer == nil && timeoutTime > 0 {
+            startTimeoutTimer()
+        }
     }
 
     private func startCheckLocationTimer() {
@@ -194,6 +206,35 @@ public class ScheduledLocationManager: NSObject, CLLocationManagerDelegate {
 
         delegate.scheduledLocationManager(self, didUpdateLocations: lastLocations)
     }
+
+    private func startTimeoutTimer() {
+        stopTimeoutTimer()
+
+        timeoutTimer = Timer.scheduledTimer(
+            timeInterval: timeoutTime,
+            target: self,
+            selector: #selector(timeoutTimerEvent),
+            userInfo: nil,
+            repeats: false
+        )
+    }
+
+    private func stopTimeoutTimer() {
+        if let timer = timeoutTimer {
+            timer.invalidate()
+            timeoutTimer = nil
+        }
+    }
+
+    @objc func timeoutTimerEvent() {
+        stopWaitTimer()
+        stopTimeoutTimer()
+        startBackgroundTask()
+        startCheckLocationTimer()
+        stopLocationManager()
+        delegate.scheduledLocationManager(self, didUpdateLocations: lastLocations)
+    }
+
 
     private func acceptableLocationAccuracyRetrieved() -> Bool {
         guard let location = lastLocations.last else { return false }
